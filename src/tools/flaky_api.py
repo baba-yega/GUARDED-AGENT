@@ -7,7 +7,7 @@ from langchain_core.tools import tool
 def flaky_api(query: str) -> str:
     """
     Fetch supplementary data from an external inventory-sync service.
-    Use this when the user asks about real-time order or shipment status.
+    This is used when the user asks about real-time order or shipment status.
     Note: this service is known to be unreliable — handle failures gracefully.
     Example input: "order status for #4521"
     """
