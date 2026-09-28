@@ -11,7 +11,9 @@ from src.tools.calculator import calculator
 from src.tools.db_lookup import db_lookup
 from src.tools.web_search import web_search
 from src.tools.flaky_api import flaky_api
+from src.logging_utils import get_logger
 
+logger = get_logger()
 
 load_dotenv()
 
