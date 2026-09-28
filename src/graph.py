@@ -29,9 +29,24 @@ llm_with_tools = llm.bind_tools(tools)
 
 def agent_node(state: AgentState) -> dict:
     response = llm_with_tools.invoke(state["messages"])
+    step = state["step_count"] + 1
+
+    tool_calls = getattr(response, "tool_calls", None) or []
+    if tool_calls:
+        for call in tool_calls:
+            logger.info(
+                "tool_call_requested",
+                extra={"data": {"step": step, "tool": call["name"], "args": call["args"]}},
+            )
+    else:
+        logger.info(
+            "final_answer",
+            extra={"data": {"step": step, "content": response.content}},
+        )
+
     return {
         "messages": [response],
-        "step_count": state["step_count"] + 1,
+        "step_count": step,
     }
 
 def should_continue(state: AgentState) -> str:
