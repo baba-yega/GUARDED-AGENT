@@ -17,7 +17,7 @@ logger = get_logger()
 
 load_dotenv()
 
-MAX_STEPS = 6
+MAX_STEPS = 1
 
 tools = [calculator, db_lookup, web_search, flaky_api]
 
@@ -52,13 +52,13 @@ def agent_node(state: AgentState) -> dict:
 def should_continue(state: AgentState) -> str:
     last_message = state["messages"][-1]
 
+    if not getattr(last_message, "tool_calls", None):
+        return "stop"
+
     if state["step_count"] >= MAX_STEPS:
         return "limit_reached"
 
-    if getattr(last_message, "tool_calls", None):
-        return "continue"
-
-    return "stop"
+    return "continue"
 
 def fallback_node(state: AgentState) -> dict:
     fallback_message = AIMessage(
