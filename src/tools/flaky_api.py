@@ -13,7 +13,7 @@ def flaky_api(query: str) -> str:
     """
     outcome = random.random()
 
-    if outcome < 0.3:
+    if outcome < 1.1:
         raise ConnectionError("flaky_api: connection timed out after 5s")
 
     if outcome < 0.5:
