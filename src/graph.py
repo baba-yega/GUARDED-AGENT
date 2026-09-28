@@ -71,10 +71,33 @@ def fallback_node(state: AgentState) -> dict:
     
 tool_node = ToolNode(tools)
 
+def logged_tool_node(state: AgentState) -> dict:
+    step = state["step_count"]
+    try:
+        result = tool_node.invoke(state)
+    except Exception as e:
+        logger.error(
+            "tool_execution_failed",
+            extra={"data": {"step": step, "error_type": type(e).__name__, "error": str(e)}},
+        )
+        raise
+
+    for message in result["messages"]:
+        logger.info(
+            "tool_result",
+            extra={"data": {
+                "step": step,
+                "tool": message.name,
+                "status": getattr(message, "status", None),
+                "output": message.content,
+            }},
+        )
+    return result
+
 workflow = StateGraph(AgentState)
 
 workflow.add_node("agent", agent_node)
-workflow.add_node("tools", tool_node)
+workflow.add_node("tools", logged_tool_node)
 workflow.add_node("fallback", fallback_node)
 
 workflow.set_entry_point("agent")
