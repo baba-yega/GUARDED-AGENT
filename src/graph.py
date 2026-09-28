@@ -69,7 +69,7 @@ def fallback_node(state: AgentState) -> dict:
     )
     return {"messages": [fallback_message]}
     
-tool_node = ToolNode(tools)
+tool_node = ToolNode(tools, handle_tool_errors=True)
 
 def logged_tool_node(state: AgentState) -> dict:
     step = state["step_count"]
