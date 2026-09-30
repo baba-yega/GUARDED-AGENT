@@ -17,7 +17,7 @@ logger = get_logger()
 
 load_dotenv()
 
-MAX_STEPS = 6
+MAX_STEPS = 1
 
 tools = [calculator, db_lookup, web_search, flaky_api]
 
@@ -87,20 +87,20 @@ def logged_tool_node(state: AgentState) -> dict:
         raise
 
     for message in result["messages"]:
-    status = getattr(message, "status", None)
-    content = str(message.content)
-    if status != "error" and content.strip().lower().startswith("error"):
-        status = "error"
+        status = getattr(message, "status", None)
+        content = str(message.content)
+        if status != "error" and content.strip().lower().startswith("error"):
+            status = "error"
 
-    logger.info(
-        "tool_result",
-        extra={"data": {
-            "step": step,
-            "tool": message.name,
-            "status": status,
-            "output": message.content,
-        }},
-    )
+        logger.info(
+            "tool_result",
+            extra={"data": {
+                "step": step,
+                "tool": message.name,
+                "status": status,
+                "output": message.content,
+            }},
+        )
     return result
 
 workflow = StateGraph(AgentState)
