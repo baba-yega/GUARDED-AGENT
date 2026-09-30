@@ -17,7 +17,7 @@ logger = get_logger()
 
 load_dotenv()
 
-MAX_STEPS = 1
+MAX_STEPS = 6
 
 tools = [calculator, db_lookup, web_search, flaky_api]
 
